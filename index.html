@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#05010a" />
+  <title>Happy Birthday, My Love ❤️ | A Galaxy of Love for You</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <!-- 3D WebGL Galaxy Canvas -->
+  <canvas id="galaxy-canvas" aria-label="Interactive 3D Love Galaxy"></canvas>
+  <div class="cosmic-vignette"></div>
+
+  <!-- ==========================================
+       1. INTRO OVERLAY CARD (00:01 in Video)
+       ========================================== -->
+  <div id="intro-overlay" class="intro-overlay">
+    <div class="intro-card">
+      <h1 id="intro-title" class="intro-title">A Galaxy of Love for You</h1>
+      <div id="intro-illustration" class="intro-illustration" aria-hidden="true"></div>
+      <p id="intro-subtitle" class="intro-subtitle">HAPPY BIRTHDAY, MY LOVE ✨</p>
+      <button id="btn-enter-universe" type="button" class="btn-enter-universe">
+        ENTER OUR UNIVERSE
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       2. FLOATING HUD (Mobile & Desktop Controls)
+       ========================================== -->
+  <div id="hud-layer" class="hud-layer">
+    <div class="hud-top">
+      <div class="hud-badge">
+        <span class="dot"></span>
+        <span id="hud-title-text">Our Love Universe</span>
+      </div>
+      <div class="hud-top-actions">
+        <button id="btn-toggle-audio" type="button" class="hud-icon-btn" title="Toggle Music">
+          🎵 <span>Music On</span>
+        </button>
+        <button id="btn-reset-view" type="button" class="hud-icon-btn" title="Center Galaxy">
+          ✨ <span class="hide-xs">Center</span>
+        </button>
+        <button id="btn-open-builder" type="button" class="hud-icon-btn" title="Personalize Gift & Photos">
+          🎁 <span>Customize</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="hud-bottom">
+      <div class="hud-hint">
+        💫 Drag to rotate • Pinch/Scroll to zoom • Tap stickers to open
+      </div>
+      <!-- Signature Floating Heart Button (bottom-right of TikTok video) -->
+      <button id="floating-heart-btn" type="button" class="floating-heart-btn" title="Open Next Memory Card">
+        ❤️
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       3. MEMORY CARD MODAL (00:11, 00:13, 00:16)
+       ========================================== -->
+  <div id="memory-modal-overlay" class="memory-modal-overlay">
+    <div class="memory-card">
+      <div class="memory-top-heart">❤️</div>
+      <div id="memory-media-box" class="memory-media-box"></div>
+      <h2 id="memory-title" class="memory-title">Love of My Life</h2>
+      <p id="memory-message" class="memory-message">
+        The more time we spend together, the deeper I fall in love with you.
+      </p>
+      <div class="memory-actions">
+        <button id="btn-memory-prev" type="button" class="btn-memory-nav" title="Previous Memory">❮</button>
+        <button id="btn-memory-back" type="button" class="btn-memory-back">BACK ❤️</button>
+        <button id="btn-memory-next" type="button" class="btn-memory-nav" title="Next Memory">❯</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       4. CUSTOMIZE / GIFT BUILDER DRAWER
+       ========================================== -->
+  <div id="builder-drawer-overlay" class="builder-drawer-overlay">
+    <aside class="builder-drawer">
+      <div class="builder-header">
+        <h2>🎁 Personalize Her Birthday Galaxy</h2>
+        <button id="btn-close-builder" type="button" class="btn-close-builder" aria-label="Close">✕</button>
+      </div>
+
+      <div class="builder-body">
+        <!-- Quick Language Presets -->
+        <div class="builder-section">
+          <h3>🌐 Language Preset</h3>
+          <div class="builder-footer-row">
+            <button id="btn-preset-en" type="button" class="btn-secondary-action">🇺🇸 English (Default)</button>
+            <button id="btn-preset-es" type="button" class="btn-secondary-action">🇪🇸 Español (Original TikTok)</button>
+          </div>
+        </div>
+
+        <!-- Intro Card Text -->
+        <div class="builder-section">
+          <h3>💖 Center 3D Heart Portrait</h3>
+          <div class="field-group">
+            <label>Photo Inside the 3D Galaxy Heart</label>
+            <div class="photo-upload-row">
+              <span style="font-size:0.78rem; color:#ffb3d9; flex:1;">✨ Default: <code>images/WhatsApp Image...jpeg</code></span>
+              <label class="btn-small" style="cursor:pointer;">
+                📷 Change Heart Photo
+                <input id="input-center-photo" type="file" accept="image/*" style="display:none;" />
+              </label>
+              <button id="btn-reset-center-photo" type="button" class="btn-small">Reset Default</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Intro Card Text -->
+        <div class="builder-section">
+          <h3>✨ Intro Screen & Title</h3>
+          <div class="field-group">
+            <label for="input-intro-title">Main Heading</label>
+            <input id="input-intro-title" type="text" placeholder="A Galaxy of Love for You" />
+          </div>
+          <div class="field-group">
+            <label for="input-intro-subtitle">Birthday Subtitle</label>
+            <input id="input-intro-subtitle" type="text" placeholder="HAPPY BIRTHDAY, MY LOVE ✨" />
+          </div>
+          <div class="field-group">
+            <label for="input-intro-btn">Button Label</label>
+            <input id="input-intro-btn" type="text" placeholder="ENTER OUR UNIVERSE" />
+          </div>
+          <div class="field-group">
+            <label for="input-hud-title">Top-Left Badge Text</label>
+            <input id="input-hud-title" type="text" placeholder="Our Love Universe" />
+          </div>
+        </div>
+
+        <!-- Background Music -->
+        <div class="builder-section">
+          <h3>🎵 Background Music</h3>
+          <div class="field-group">
+            <label for="select-music-mode">Select Melody or Upload Song</label>
+            <select id="select-music-mode">
+              <option value="romantic_synth">🎹 Dreamy Romantic Piano (Built-in)</option>
+              <option value="birthday_box">🎂 Celestial Happy Birthday Music Box</option>
+              <option value="custom">🎧 Custom Uploaded MP3 Song</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="btn-small" style="text-align:center; cursor:pointer;">
+              🎵 Upload Her Favorite Song (.mp3 / audio)
+              <input id="input-music-file" type="file" accept="audio/*" style="display:none;" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Orbiting Memory Cards (Stickers & Couple Photos) -->
+        <div class="builder-section">
+          <h3>💖 Orbiting Memory Cards & Photos</h3>
+          <div id="memories-editor-list" style="display:flex; flex-direction:column; gap:12px;"></div>
+          <button id="btn-add-memory" type="button" class="btn-small" style="padding:10px; text-align:center;">
+            + Add Another Orbiting Memory / Photo
+          </button>
+        </div>
+
+        <!-- Orbiting 3D Neon Phrases -->
+        <div class="builder-section">
+          <h3>🌌 Orbiting 3D Galaxy Phrases (One per line)</h3>
+          <div class="field-group">
+            <textarea id="input-phrases" rows="6" placeholder="HAPPY BIRTHDAY&#10;MY ETERNAL LOVE ∞&#10;YOU ARE MAGIC ✨"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="builder-footer">
+        <button id="btn-export-whatsapp" type="button" class="btn-export-html">
+          📥 Download "Happy Birthday 🥳❤️.html" (For WhatsApp)
+        </button>
+        <div class="builder-footer-row">
+          <button id="btn-save-builder" type="button" class="btn-secondary-action">💾 Save & Preview</button>
+          <button id="btn-copy-link" type="button" class="btn-secondary-action">🔗 Copy Gift Link</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-msg" class="toast-msg">Saved!</div>
+
+  <!-- Three.js & OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- App Modules -->
+  <script src="./artwork.js"></script>
+  <script src="./audio.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
+
