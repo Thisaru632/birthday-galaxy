@@ -1172,10 +1172,12 @@ class BirthdayGalaxyApp {
     const btnOpen = document.getElementById('btn-open-builder');
     const btnClose = document.getElementById('btn-close-builder');
 
-    btnOpen.addEventListener('click', () => {
-      this.populateBuilderForm();
-      drawerOverlay.classList.add('open');
-    });
+    if (btnOpen) {
+      btnOpen.addEventListener('click', () => {
+        this.populateBuilderForm();
+        drawerOverlay.classList.add('open');
+      });
+    }
 
     btnClose.addEventListener('click', () => {
       drawerOverlay.classList.remove('open');
