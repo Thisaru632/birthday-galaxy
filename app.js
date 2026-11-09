@@ -8,7 +8,7 @@ const DEFAULT_CONFIG = {
   introTitle: "A Galaxy of Love for You",
   introSubtitle: "HAPPY BIRTHDAY, MY LOVE ✨",
   introButton: "ENTER OUR UNIVERSE",
-  hudTitle: "Our Love Universe",
+  hudTitle: "OUR LOVE GALAXY",
   centerHeartPhoto: "", // Empty string uses the default portrait in ./images/ folder (window.CENTER_HEART_PHOTO)
   musicMode: "romantic_synth", // 'romantic_synth' | 'birthday_box' | 'custom'
   customMusicUrl: "",
@@ -226,6 +226,9 @@ class BirthdayGalaxyApp {
       const saved = localStorage.getItem('birthday_galaxy_config_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
+        if (!parsed.hudTitle || parsed.hudTitle === 'Our Love Universe') {
+          parsed.hudTitle = 'OUR LOVE GALAXY';
+        }
         if (Array.isArray(parsed.memories)) {
           parsed.memories.forEach(m => {
             if ((m.id === 'mem-2' || (m.title && (m.title.toLowerCase() === 'for you' || m.title.toLowerCase() === 'para ti'))) && m.artwork === 'snoopyLove') {
@@ -1112,7 +1115,12 @@ class BirthdayGalaxyApp {
     const btnAudio = document.getElementById('btn-toggle-audio');
     btnAudio.addEventListener('click', () => {
       const playing = window.galaxyAudio.toggleMute();
-      btnAudio.innerHTML = playing ? '🎵 <span>Music On</span>' : '🔇 <span>Muted</span>';
+      btnAudio.classList.toggle('is-playing', playing);
+      btnAudio.classList.toggle('is-muted', !playing);
+      const labelEl = document.getElementById('audio-btn-label');
+      if (labelEl) {
+        labelEl.textContent = playing ? 'Music' : 'Muted';
+      }
     });
 
     document.getElementById('btn-reset-view').addEventListener('click', () => {
