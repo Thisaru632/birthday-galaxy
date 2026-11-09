@@ -37,7 +37,7 @@ const DEFAULT_CONFIG = {
       id: "mem-1",
       title: "Love of My Life",
       message: "The more time we spend together, the deeper I fall in love with you. Happy Birthday to my favorite person in the universe.",
-      artwork: "spideyKitty"
+      artwork: "coupleBalcony"
     },
     {
       id: "mem-2",
@@ -49,19 +49,19 @@ const DEFAULT_CONFIG = {
       id: "mem-3",
       title: "Forever & Always",
       message: "No matter how many lifetimes I get to live, in every single one of them I would still choose you. Forever and a day more.",
-      artwork: "soulmatesGlow"
+      artwork: "couplePicnic"
     },
     {
       id: "mem-4",
       title: "Birthday Wishes",
       message: "Today the whole universe celebrates the day you were born. May all your wishes shine as bright as your smile.",
-      artwork: "birthdayCrown"
+      artwork: "herFlower"
     },
     {
       id: "mem-5",
       title: "Our Best Memories",
       message: "Every moment by your side feels like a dream I never want to wake up from. Here's to making a million more memories together.",
-      artwork: "couplePolaroid"
+      artwork: "herGlasses"
     }
   ]
 };
@@ -97,7 +97,7 @@ const SPANISH_PRESET = {
       id: "mem-1",
       title: "Amor de mi Vida",
       message: "Cuanto más tiempo estamos juntos, más te amo. Feliz cumpleaños a la persona más especial de mi universo.",
-      artwork: "spideyKitty"
+      artwork: "coupleBalcony"
     },
     {
       id: "mem-2",
@@ -109,13 +109,19 @@ const SPANISH_PRESET = {
       id: "mem-3",
       title: "Para Siempre",
       message: "No me importa cuántas vidas tenga que vivir, en cada una de ellas te elegiré a ti. Para siempre y un día más.",
-      artwork: "soulmatesGlow"
+      artwork: "couplePicnic"
     },
     {
       id: "mem-4",
       title: "Feliz Cumpleaños",
       message: "Hoy el universo entero celebra el día en que naciste. Que todos tus sueños brillen tan fuerte como tu sonrisa.",
-      artwork: "birthdayCrown"
+      artwork: "herFlower"
+    },
+    {
+      id: "mem-5",
+      title: "Nuestros Recuerdos",
+      message: "Cada momento a tu lado es mi lugar favorito. Por un millón de aventuras y cumpleaños más juntos.",
+      artwork: "herGlasses"
     }
   ]
 };
@@ -187,6 +193,18 @@ class BirthdayGalaxyApp {
     if (artworkKey === '__FOR_YOU_VIDEO__') {
       return window.FOR_YOU_VIDEO_DATA || DEFAULT_FOR_YOU_VIDEO_PATH;
     }
+    if (window.NEW_GALAXY_PHOTOS && window.NEW_GALAXY_PHOTOS[artworkKey]) {
+      return window.NEW_GALAXY_PHOTOS[artworkKey];
+    }
+    const newFolderFallbacks = {
+      coupleBalcony: './images/new images/WhatsApp Image 2026-11-09 at 5.03.53 PM.jpeg',
+      couplePicnic: './images/new images/Gemini_Generated_Image_cdckhicdckhicdck.jpg',
+      herFlower: './images/new images/her_flower_upright.jpg',
+      herGlasses: './images/new images/WhatsApp Image 2026-11-09 at 5.02.18 PM (1).jpeg'
+    };
+    if (newFolderFallbacks[artworkKey]) {
+      return newFolderFallbacks[artworkKey];
+    }
     return window.getArtworkDataUri(artworkKey);
   }
 
@@ -208,12 +226,15 @@ class BirthdayGalaxyApp {
       const saved = localStorage.getItem('birthday_galaxy_config_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Automatically migrate "For You" / "Para ti" memory to use gemini_generated_video_c18638f2.mp4
         if (Array.isArray(parsed.memories)) {
           parsed.memories.forEach(m => {
             if ((m.id === 'mem-2' || (m.title && (m.title.toLowerCase() === 'for you' || m.title.toLowerCase() === 'para ti'))) && m.artwork === 'snoopyLove') {
               m.artwork = '__FOR_YOU_VIDEO__';
             }
+            if (m.id === 'mem-1' && m.artwork === 'spideyKitty') m.artwork = 'coupleBalcony';
+            if (m.id === 'mem-3' && m.artwork === 'soulmatesGlow') m.artwork = 'couplePicnic';
+            if (m.id === 'mem-4' && m.artwork === 'birthdayCrown') m.artwork = 'herFlower';
+            if (m.id === 'mem-5' && m.artwork === 'couplePolaroid') m.artwork = 'herGlasses';
           });
         }
         return Object.assign({}, JSON.parse(JSON.stringify(DEFAULT_CONFIG)), parsed);
@@ -1039,8 +1060,13 @@ class BirthdayGalaxyApp {
     } else if (mem.artwork && window.GALAXY_ARTWORK[mem.artwork]) {
       mediaBox.innerHTML = window.GALAXY_ARTWORK[mem.artwork];
     } else {
+      const isWidescreenPhoto = mem.artwork === 'coupleBalcony' || mem.artwork === 'couplePicnic' || mem.artwork === 'herFlower';
+      if (isWidescreenPhoto) {
+        mediaBox.classList.add('video-mode');
+      }
       const imgSrc = this.resolveArtworkSrc(mem.artwork);
-      mediaBox.innerHTML = `<img src="${imgSrc}" alt="${this.escapeHtml(mem.title)}" style="object-position: center 28%;" />`;
+      const objPos = isWidescreenPhoto ? 'center center' : 'center 24%';
+      mediaBox.innerHTML = `<img src="${imgSrc}" alt="${this.escapeHtml(mem.title)}" style="object-position: ${objPos};" />`;
     }
 
     document.getElementById('memory-title').textContent = mem.title;
@@ -1270,7 +1296,7 @@ class BirthdayGalaxyApp {
     (this.config.memories || []).forEach((mem, idx) => {
       const item = document.createElement('div');
       item.className = 'memory-editor-item';
-      const isCustomMedia = mem.artwork && mem.artwork !== '__CENTER_PHOTO__' && mem.artwork !== '__FOR_YOU_VIDEO__' && !window.GALAXY_ARTWORK[mem.artwork];
+      const isCustomMedia = mem.artwork && mem.artwork !== '__CENTER_PHOTO__' && mem.artwork !== '__FOR_YOU_VIDEO__' && !(window.NEW_GALAXY_PHOTOS && window.NEW_GALAXY_PHOTOS[mem.artwork]) && !window.GALAXY_ARTWORK[mem.artwork];
 
       item.innerHTML = `
         <div class="memory-editor-header">
@@ -1289,6 +1315,10 @@ class BirthdayGalaxyApp {
           <label>Sticker, Video, or Couple Photo</label>
           <div class="photo-upload-row">
             <select class="mem-select-art" data-idx="${idx}" style="flex:1;">
+              <option value="coupleBalcony" ${mem.artwork === 'coupleBalcony' ? 'selected' : ''}>💑 Couple Balcony Selfie (Love of My Life)</option>
+              <option value="couplePicnic" ${mem.artwork === 'couplePicnic' ? 'selected' : ''}>🧺 Couple Picnic Photo (Forever & Always)</option>
+              <option value="herFlower" ${mem.artwork === 'herFlower' ? 'selected' : ''}>🌺 Her Flower Portrait (Birthday Wishes)</option>
+              <option value="herGlasses" ${mem.artwork === 'herGlasses' ? 'selected' : ''}>👓 Her Glasses Portrait (Our Best Memories)</option>
               <option value="__FOR_YOU_VIDEO__" ${mem.artwork === '__FOR_YOU_VIDEO__' ? 'selected' : ''}>🎬 Romantic Picnic Video (For You)</option>
               <option value="__CENTER_PHOTO__" ${mem.artwork === '__CENTER_PHOTO__' ? 'selected' : ''}>💖 Her Portrait (From Center Heart)</option>
               <option value="spideyKitty" ${mem.artwork === 'spideyKitty' ? 'selected' : ''}>🕷️🐱 Spidey & Kitty</option>
