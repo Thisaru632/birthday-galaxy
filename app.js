@@ -2,6 +2,7 @@
 
 const DEFAULT_HEART_IMAGE_PATH = './images/WhatsApp Image 2026-11-09 at 5.03.52 PM.jpeg';
 const DEFAULT_FOR_YOU_VIDEO_PATH = './images/gemini_generated_video_c18638f2.mp4';
+const DEFAULT_BG_MUSIC_PATH = './images/Paata%20As%20-%20Praveen%20Madhubhashana%20%5BSONG.LK%5D.mp3';
 
 const DEFAULT_CONFIG = {
   herName: "My Love",
@@ -10,8 +11,8 @@ const DEFAULT_CONFIG = {
   introButton: "ENTER OUR UNIVERSE",
   hudTitle: "OUR LOVE GALAXY",
   centerHeartPhoto: "", // Empty string uses the default portrait in ./images/ folder (window.CENTER_HEART_PHOTO)
-  musicMode: "romantic_synth", // 'romantic_synth' | 'birthday_box' | 'custom'
-  customMusicUrl: "",
+  musicMode: "custom", // 'romantic_synth' | 'birthday_box' | 'custom'
+  customMusicUrl: DEFAULT_BG_MUSIC_PATH,
   phrases: [
     "HAPPY BIRTHDAY",
     "MY ETERNAL LOVE ∞",
@@ -228,6 +229,10 @@ class BirthdayGalaxyApp {
         const parsed = JSON.parse(saved);
         if (!parsed.hudTitle || parsed.hudTitle === 'Our Love Universe') {
           parsed.hudTitle = 'OUR LOVE GALAXY';
+        }
+        if (!parsed.customMusicUrl || parsed.musicMode === 'romantic_synth') {
+          parsed.musicMode = 'custom';
+          parsed.customMusicUrl = DEFAULT_BG_MUSIC_PATH;
         }
         if (Array.isArray(parsed.memories)) {
           parsed.memories.forEach(m => {
